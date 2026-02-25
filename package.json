@@ -1,10 +1,14 @@
 {
   "name": "env-streamer-mode",
   "displayName": "ENV Streamer Mode",
-  "description": "Automatically protect .env files when OBS Studio is detected running. Blocks file content until you confirm it's safe to view.",
+  "description": "Protect your .env files while streaming. Automatically detects OBS, Streamlabs, XSplit, Twitch Studio, vMix, and Wirecast, then blocks .env file content until you confirm it's safe to view.",
   "version": "0.1.0",
   "license": "MIT",
   "publisher": "goncy",
+  "author": {
+    "name": "Gonzalo Pozzo",
+    "url": "https://github.com/goncy"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -15,29 +19,48 @@
     "streamer",
     "streaming",
     "obs",
+    "streamlabs",
+    "xsplit",
+    "twitch",
     "env",
     "dotenv",
     "security",
     "privacy",
-    "secrets"
+    "secrets",
+    "environment",
+    "variables",
+    "vmix",
+    "wirecast"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/goncy/env-streamer-mode-vscode"
   },
+  "bugs": {
+    "url": "https://github.com/goncy/env-streamer-mode-vscode/issues"
+  },
+  "homepage": "https://github.com/goncy/env-streamer-mode-vscode#readme",
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#1a1a2e",
+    "theme": "dark"
+  },
   "contributes": {
     "customEditors": [
       {
         "viewType": "envStreamerMode.protectedEditor",
         "displayName": "ENV Protected View",
         "selector": [
-          { "filenamePattern": ".env" },
-          { "filenamePattern": ".env.*" }
+          {
+            "filenamePattern": ".env"
+          },
+          {
+            "filenamePattern": ".env.*"
+          }
         ],
         "priority": "default"
       }
@@ -52,17 +75,17 @@
     "configuration": {
       "title": "ENV Streamer Mode",
       "properties": {
-        "envStreamerMode.autoDetectOBS": {
+        "envStreamerMode.autoDetect": {
           "type": "boolean",
           "default": true,
-          "description": "Automatically detect OBS Studio and activate streamer mode."
+          "description": "Automatically detect streaming software (OBS, Streamlabs, XSplit, Twitch Studio, vMix, Wirecast)."
         },
         "envStreamerMode.pollInterval": {
           "type": "number",
           "default": 5000,
           "minimum": 2000,
           "maximum": 30000,
-          "description": "How often to check if OBS is running (in milliseconds)."
+          "description": "How often to check for streaming software (in milliseconds)."
         }
       }
     }
@@ -72,8 +95,7 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "package": "node esbuild.js --production",
-    "watch:esbuild": "node esbuild.js --watch",
-    "lint": "eslint src --ext ts"
+    "watch:esbuild": "node esbuild.js --watch"
   },
   "devDependencies": {
     "@types/node": "20.x",

@@ -1,13 +1,13 @@
 # Changelog
 
-## [0.1.0] - 2026-02-24
+## [0.1.0] - 2026-02-25
 
 ### Added
 
-- Automatic OBS Studio detection (Windows, macOS, Linux)
-- `.env` file value masking with text decorations
-- Modal confirmation dialog to reveal values while OBS is running
-- Status bar indicator showing OBS status
-- Manual toggle command for streamer mode
-- Configurable polling interval, file patterns, and mask character
-- Auto-reveal values when OBS closes (configurable)
+- Protection screen for `.env` files that blocks content before rendering
+- Auto-detection of streaming software: OBS Studio, Streamlabs Desktop, XSplit, Twitch Studio, vMix, Wirecast
+- Cross-platform support (Windows, macOS, Linux)
+- Manual toggle via command palette and status bar click
+- Status bar indicator showing streamer mode state
+- Session-based manual override (resets on VS Code restart)
+- Configurable polling interval and auto-detection toggle

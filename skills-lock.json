@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "vscode-extension-builder": {
+      "source": "kjgarza/marketplace-claude",
+      "sourceType": "github",
+      "computedHash": "db8784fee8a773116a36e88dcc028a61fc523b34f98d3fe63208dce17425f8c6"
+    }
+  }
+}

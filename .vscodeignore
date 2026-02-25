@@ -1,5 +1,7 @@
 .vscode/**
 .vscode-test/**
+.agents/**
+.claude/**
 src/**
 out/**
 node_modules/**
@@ -7,6 +9,9 @@ node_modules/**
 .eslintrc.json
 tsconfig.json
 esbuild.js
+skills-lock.json
 **/*.map
 **/*.ts
 !dist/**
+*.vsix
+images/icon.svg

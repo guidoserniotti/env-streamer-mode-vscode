@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { OBS_PROCESS_NAMES } from './constants';
+import { STREAMING_PROCESS_NAMES } from './constants';
 
 const execAsync = promisify(exec);
 
-export class OBSDetector implements vscode.Disposable {
+export class StreamDetector implements vscode.Disposable {
   private _onDidChangeStatus = new vscode.EventEmitter<boolean>();
   readonly onDidChangeStatus = this._onDidChangeStatus.event;
 
@@ -19,8 +19,8 @@ export class OBSDetector implements vscode.Disposable {
 
   startPolling(intervalMs: number): void {
     this.stopPolling();
-    this.checkOBS();
-    this._pollingTimer = setInterval(() => this.checkOBS(), intervalMs);
+    this.check();
+    this._pollingTimer = setInterval(() => this.check(), intervalMs);
   }
 
   stopPolling(): void {
@@ -30,22 +30,22 @@ export class OBSDetector implements vscode.Disposable {
     }
   }
 
-  private async checkOBS(): Promise<void> {
+  private async check(): Promise<void> {
     if (this._disposed) {
       return;
     }
 
     const wasRunning = this._isRunning;
-    this._isRunning = await this.isOBSRunning();
+    this._isRunning = await this.isStreamingSoftwareRunning();
 
     if (wasRunning !== this._isRunning) {
       this._onDidChangeStatus.fire(this._isRunning);
     }
   }
 
-  private async isOBSRunning(): Promise<boolean> {
+  private async isStreamingSoftwareRunning(): Promise<boolean> {
     const platform = process.platform;
-    const processNames = OBS_PROCESS_NAMES[platform];
+    const processNames = STREAMING_PROCESS_NAMES[platform];
 
     if (!processNames) {
       return false;
@@ -57,10 +57,9 @@ export class OBSDetector implements vscode.Disposable {
         const lowerOutput = stdout.toLowerCase();
         return processNames.some((name) => lowerOutput.includes(name.toLowerCase()));
       } else {
-        // macOS and Linux: use pgrep for efficiency
         for (const name of processNames) {
           try {
-            await execAsync(`pgrep -x "${name}"`);
+            await execAsync(`pgrep -if "${name}"`);
             return true;
           } catch {
             // pgrep returns exit code 1 if process not found
@@ -68,8 +67,7 @@ export class OBSDetector implements vscode.Disposable {
         }
         return false;
       }
-    } catch (error) {
-      console.error('[ENV Streamer Mode] Error checking OBS status:', error);
+    } catch {
       return false;
     }
   }

@@ -1,10 +1,15 @@
 import * as vscode from 'vscode';
 
-export class ProtectedEditorProvider implements vscode.CustomReadonlyEditorProvider {
-  private _isActive: () => boolean;
+interface StreamerModeState {
+  active: boolean;
+  reason: string;
+}
 
-  constructor(isActive: () => boolean) {
-    this._isActive = isActive;
+export class ProtectedEditorProvider implements vscode.CustomReadonlyEditorProvider {
+  private _getState: () => StreamerModeState;
+
+  constructor(getState: () => StreamerModeState) {
+    this._getState = getState;
   }
 
   openCustomDocument(uri: vscode.Uri): vscode.CustomDocument {
@@ -15,8 +20,9 @@ export class ProtectedEditorProvider implements vscode.CustomReadonlyEditorProvi
     document: vscode.CustomDocument,
     webviewPanel: vscode.WebviewPanel,
   ): void {
-    if (!this._isActive()) {
-      // Streamer mode not active — open normally in text editor
+    const state = this._getState();
+
+    if (!state.active) {
       webviewPanel.webview.html = getBlankHtml();
       setTimeout(async () => {
         const viewColumn = webviewPanel.viewColumn;
@@ -27,9 +33,8 @@ export class ProtectedEditorProvider implements vscode.CustomReadonlyEditorProvi
       return;
     }
 
-    // Streamer mode active — show protection screen
     webviewPanel.webview.options = { enableScripts: true };
-    webviewPanel.webview.html = getProtectionHtml(webviewPanel.webview);
+    webviewPanel.webview.html = getProtectionHtml(webviewPanel.webview, state.reason);
 
     webviewPanel.webview.onDidReceiveMessage(async (message) => {
       const viewColumn = webviewPanel.viewColumn;
@@ -58,8 +63,9 @@ function getNonce(): string {
   return text;
 }
 
-function getProtectionHtml(webview: vscode.Webview): string {
+function getProtectionHtml(webview: vscode.Webview, reason: string): string {
   const nonce = getNonce();
+  const escapedReason = reason.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -147,7 +153,7 @@ function getProtectionHtml(webview: vscode.Webview): string {
   <div class="container">
     <div class="shield">\u{1F6E1}\u{FE0F}</div>
     <h2>Streamer Mode Active</h2>
-    <div class="warning">\u{26A0}\u{FE0F} OBS Studio is currently running</div>
+    <div class="warning">\u{26A0}\u{FE0F} ${escapedReason}</div>
     <p>
       This file contains environment variables with sensitive values.<br>
       Are you sure you want to open it? Your stream audience may see its content.
