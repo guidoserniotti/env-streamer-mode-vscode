@@ -55,12 +55,8 @@
         "viewType": "envStreamerMode.protectedEditor",
         "displayName": "ENV Protected View",
         "selector": [
-          {
-            "filenamePattern": ".env"
-          },
-          {
-            "filenamePattern": ".env.*"
-          }
+          { "filenamePattern": "**/.env" },
+          { "filenamePattern": "**/.env.*" }
         ],
         "priority": "default"
       }
