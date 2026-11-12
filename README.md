@@ -10,7 +10,7 @@
 
 1. The extension detects when streaming software is running
 2. When you open a `.env` file, instead of showing the content, you see a **protection screen**
-3. You must **explicitly confirm** you want to see the file content
+3. You can **explicitly confirm** you want to see the entire file, or review it with every line hidden by default and reveal lines individually
 4. If no streaming software is detected, `.env` files open normally
 
 No values are ever shown without your consent while streaming.
@@ -34,6 +34,7 @@ No values are ever shown without your consent while streaming.
 - **Session-based** — Manual toggle resets when you restart VS Code
 - **Status bar indicator** — Shows whether streamer mode is on or off
 - **Smart messaging** — Protection screen shows whether it was triggered by detected software or manual activation
+- **Per-line review** — See variable names without their values, then reveal or hide individual lines in a read-only view without changing the file
 
 ## Commands
 

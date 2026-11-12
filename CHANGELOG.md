@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Read-only `.env` review view with individual line reveal and hide controls
+
 ## [0.1.0] - 2026-02-25
 
 ### Added
